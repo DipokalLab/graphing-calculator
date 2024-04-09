@@ -68,6 +68,7 @@ function Canvas() {
     ctx.stroke();
 
     drawLines({ x: x, y: y });
+    drawLineTexts({ x: x, y: y });
   };
 
   const drawLines = ({ x, y }: { x: number; y: number }) => {
@@ -92,6 +93,51 @@ function Canvas() {
         ctx.stroke();
       }
     }
+  };
+
+  const drawLineTexts = ({ x, y }: { x: number; y: number }) => {
+    const canvas = canvasRef.current as HTMLCanvasElement;
+    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    const pd = 40;
+
+    for (let paddingX = -20; paddingX < 32; paddingX++) {
+      const pdX = paddingX * pd + (x % 400);
+      const calcX = x < 0 ? Math.floor(x / 400) + 1 : Math.floor(x / 400);
+      drawText({
+        ctx: ctx,
+        text: String(paddingX - 12 - calcX * 10),
+        x: pdX,
+        y: y + 400,
+      });
+    }
+
+    for (let paddingY = -20; paddingY < 32; paddingY++) {
+      const pdY = paddingY * pd + (y % 400);
+      const calcY = y < 0 ? Math.floor(y / 400) + 1 : Math.floor(y / 400);
+      const printNumber = (paddingY - 10 - calcY * 10) * -1;
+
+      drawText({
+        ctx: ctx,
+        text: String(printNumber == 0 ? "" : printNumber),
+        x: x + 400 + 70,
+        y: pdY,
+      });
+    }
+  };
+
+  const drawText = ({
+    ctx,
+    text,
+    x,
+    y,
+  }: {
+    ctx: CanvasRenderingContext2D;
+    text: string;
+    x: number;
+    y: number;
+  }) => {
+    ctx.font = "16px serif";
+    ctx.fillText(text, x, y);
   };
 
   const initCanvas = () => {
