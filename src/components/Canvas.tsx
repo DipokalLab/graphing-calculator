@@ -55,7 +55,7 @@ function Canvas() {
     const canvas = canvasRef.current as HTMLCanvasElement;
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
-    ctx.lineWidth = 0.5;
+    ctx.lineWidth = 1;
 
     ctx.beginPath();
     ctx.moveTo(0, y + canvas.height / 2);
@@ -66,6 +66,32 @@ function Canvas() {
     ctx.moveTo(x + canvas.width / 2, 0);
     ctx.lineTo(x + canvas.width / 2, canvas.height);
     ctx.stroke();
+
+    drawLines({ x: x, y: y });
+  };
+
+  const drawLines = ({ x, y }: { x: number; y: number }) => {
+    const canvas = canvasRef.current as HTMLCanvasElement;
+    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    ctx.lineWidth = 0.01;
+
+    for (let paddingX = -20; paddingX < 20; paddingX++) {
+      for (let paddingY = -20; paddingY < 20; paddingY++) {
+        const pd = 40;
+        const pdY = paddingY * pd + (y % 400);
+        const pdX = paddingX * pd + (x % 400);
+
+        ctx.beginPath();
+        ctx.moveTo(0, pdY + canvas.height / 2);
+        ctx.lineTo(canvas.width, pdY + canvas.height / 2);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(pdX + canvas.width / 2, 0);
+        ctx.lineTo(pdX + canvas.width / 2, canvas.height);
+        ctx.stroke();
+      }
+    }
   };
 
   const initCanvas = () => {
@@ -85,6 +111,10 @@ function Canvas() {
 
     setMousePosition({
       ...mousePosition,
+      ["current"]: {
+        x: e.clientX,
+        y: e.clientY,
+      },
     });
 
     setIsMouseMove(true);
