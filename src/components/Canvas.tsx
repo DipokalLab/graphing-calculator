@@ -76,8 +76,8 @@ function Canvas() {
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
     ctx.lineWidth = 0.01;
 
-    for (let paddingX = -20; paddingX < 20; paddingX++) {
-      for (let paddingY = -20; paddingY < 20; paddingY++) {
+    for (let paddingX = -20; paddingX < 30; paddingX++) {
+      for (let paddingY = -20; paddingY < 30; paddingY++) {
         const pd = 40;
         const pdY = paddingY * pd + (y % 400);
         const pdX = paddingX * pd + (x % 400);
@@ -101,25 +101,25 @@ function Canvas() {
     const pd = 40;
 
     for (let paddingX = -20; paddingX < 32; paddingX++) {
-      const pdX = paddingX * pd + (x % 400);
+      const pdX = paddingX * pd + (x % 400) + window.innerWidth / 2;
       const calcX = x < 0 ? Math.floor(x / 400) + 1 : Math.floor(x / 400);
       drawText({
         ctx: ctx,
-        text: String(paddingX - 12 - calcX * 10),
+        text: String(paddingX - calcX * 10),
         x: pdX,
-        y: y + 400,
+        y: y + window.innerHeight / 2 + 15,
       });
     }
 
     for (let paddingY = -20; paddingY < 32; paddingY++) {
-      const pdY = paddingY * pd + (y % 400);
+      const pdY = paddingY * pd + (y % 400) + window.innerHeight / 2;
       const calcY = y < 0 ? Math.floor(y / 400) + 1 : Math.floor(y / 400);
-      const printNumber = (paddingY - 10 - calcY * 10) * -1;
+      const printNumber = (paddingY - calcY * 10) * -1;
 
       drawText({
         ctx: ctx,
         text: String(printNumber == 0 ? "" : printNumber),
-        x: x + 400 + 70,
+        x: x + window.innerWidth / 2,
         y: pdY,
       });
     }
@@ -143,6 +143,28 @@ function Canvas() {
   const initCanvas = () => {
     resizeCanvas();
     drawCoordinate({ x: 0, y: 0 });
+
+    setMousePosition({
+      down: {
+        x: 0,
+        y: 0,
+      },
+      current: {
+        x: 0,
+        y: 0,
+      },
+    });
+
+    setCanvasCenter({
+      down: {
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2,
+      },
+      current: {
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2,
+      },
+    });
   };
 
   const handleMouseDown = (e: any) => {
@@ -185,6 +207,7 @@ function Canvas() {
     canvas.addEventListener("mousedown", handleMouseDown);
     canvas.addEventListener("mouseup", handleMouseUp);
     canvas.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("resize", initCanvas);
   };
 
   useEffect(() => {
